@@ -5,17 +5,20 @@
 #Rules to Game of Life
 #Any live cell with fewer than two live neighbors dies,
 #as if caused by underpopulation
-
 #Any live cell with two or three live neighbors lives on to the next generation
-#Any lvie cell with more than three live neighbors dies, as if by overpopulation
+#Any live cell with more than three live neighbors dies, as if by overpopulation
 #any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction
 import os
 import time
 import random
-#starts at zero so really rows = 5 and cols = 5
-#this is just easier to read the loops this way
-
-
+#makes it so array can be made from user input
+def GiveBoundaries(rows,cols):
+    a = []
+    for i in range(rows):
+        a.append([])
+        for j in range(cols):
+                a[i].append("_")
+    return a
 def RandomlyFillArray(ar):
     rows = len(ar)
     cols = len(ar[0])
@@ -48,77 +51,79 @@ def display_array(ar):
 def check_neighbors(ar):
     rows = len(ar)
     cols = len(ar[0])
-    NextGeneration = [['',' ',' ',' ',' ' ],
-          [' ',' ',' ',' ',' ' ],
-          [' ',' ',' ',' ',' ' ],
-          [' ',' ',' ',' ',' ' ],
-          [' ',' ',' ',' ',' ' ]]
+    NextGeneration = GiveBoundaries(rows,cols)
     #this counter will calculate the surrounding neighbors
     #if this counter is equal to 2 or 3 then the cell will live
     # otherwise if its greater than 3 or less than 2 it will die
-    for i in range(rows-1):
-        Neighbor = 0
-        for x in range(cols-1):
+    for i in range(rows):
+        for x in range(cols):
+            Neighbor = 0
+            ChancesOfReproduction = 0
             if(ar[i][x] == "*"):
-                #this will now check to the left and the right
-                #Checking all the corners
-                if(x == cols):
-                    if(i == 0):
-                        #top right corner
-                        if(ar[i][x] == ar[i+1][x]):
-                            Neighbor = Neighbor + 1
-                        if(ar[i][x]==ar[i][x-1]):
-                            Neighbor = Neighbor + 1
-                    elif(i == rows ):
-                        #bottom right corner
-                        if(ar[i][x] == ar[i-1][x]):
-                            Neighbor = Neighbor + 1
-                        if(ar[i][x]==ar[i][x-1]):
-                            Neighbor = Neighbor + 1
-                elif(x == 0):
-                    if(i==0):
-                        #top left
-                        if(ar[i][x]==ar[i][x+1]):
-                            Neighbor = Neighbor + 1
-                        if(ar[i][x] == ar[i+1][x]):
-                            Neighbor = Neighbor + 1
-                    elif(i==rows):
-                        #bottom left corner
-                        if(ar[i][x]==ar[i-1][x]):
-                            Neighbor=Neighbor+1
-                        if(ar[i][x]==ar[i][x+1]):
-                            Neighbor = Neighbor + 1
-                ##checking everything besides corners
-                ##starting off with top row checking left right and down
-                elif(i==0 and x !=0 and x != cols ):
-                    if(ar[i][x]==ar[i+1][x]):
-                        Neighbor=Neighbor+1
-                    if(ar[i][x]==ar[i][x+1]):
-                        Neighbor=Neighbor+1
-                    if(ar[i][x]==ar[i][x-1]):
-                        Neighbor=Neighbor+1
-                elif(i==rows and x!=0 and x !=cols):
-                    ##bottom row checking left right and up
-                    if(ar[i][x]==ar[i][x+1]):
-                        Neighbor=Neighbor+1
-                    if(ar[i][x]==ar[i][x-1]):
-                        Neighbor=Neighbor+1
-                    if(ar[i][x]==ar[i-1][x]):
-                        Neighbor=Neighbor+1
-                elif(i != rows and i !=0 and x != cols  and x != 0):
-                    ##now we can check in every direction (up down left and right)
-                    if(ar[i][x]==ar[i][x+1]):
-                        Neighbor=Neighbor+1
-                    if(ar[i][x]==ar[i][x-1]):
-                        Neighbor=Neighbor+1
-                    if(ar[i][x]==ar[i-1][x]):
-                        Neighbor=Neighbor+1
-                    if(ar[i][x]==ar[i+1][x]):
-                        Neighbor=Neighbor+1
-                
-                    
+                if(i!=rows-1):
+                    if(ar[i][x] == ar[i+1][x]):
+                        Neighbor = Neighbor + 1
+                if(i!=0):
+                    if (ar[i][x] == ar[i-1][x]):
+                        Neighbor = Neighbor + 1
+                if(x!=cols-1):
+                    if (ar[i][x] == ar[i][x+1]):
+                        Neighbor = Neighbor + 1
+                if(x!=0):
+                    if (ar[i][x] == ar[i][x-1]):
+                        Neighbor = Neighbor + 1
+                ##remove these and statements if you only want it to check up down left and right
+                if(x!=0 and i != 0):
+                    #checking top left
+                    if(ar[i][x]==ar[i-1][x-1]):
+                        Neighbor = Neighbor + 1
+                if(x!=0 and i != rows-1):
+                    #checking bottom left
+                    if(ar[i][x]==ar[i+1][x-1]):
+                        Neighbor = Neighbor + 1
+                if(x!=cols-1 and i !=0):
+                    ##checking top right
+                    if(ar[i][x] ==ar[i-1][x+1]):
+                        Neighbor = Neighbor + 1
+                if(x!=cols-1 and i != rows-1):
+                    #checking bottom right
+                    if(ar[i][x]==ar[i+1][x+1]):
+                        Neighbor = Neighbor + 1
                 if (Neighbor == 2 or Neighbor == 3):
                     NextGeneration[i][x] = "*"
+            if(ar[i][x] =="_"):
+                if(i!=rows-1):
+                    if(ar[i+1][x] == "*"):
+                       ChancesOfReproduction = ChancesOfReproduction + 1
+                if(i!=0):
+                    if (ar[i-1][x] == "*"):
+                       ChancesOfReproduction = ChancesOfReproduction + 1
+                if(x!=cols-1):
+                    if (ar[i][x+1] == "*"):
+                       ChancesOfReproduction = ChancesOfReproduction + 1
+                if(x!=0):
+                    if (ar[i][x-1] == "*"):
+                       ChancesOfReproduction = ChancesOfReproduction + 1
+                ##remove these and statements if you only want it to check up down left and right
+                if(x!=0 and i != 0):
+                    #checking top left
+                    if(ar[i-1][x-1]=="*"):
+                        ChancesOfReproduction = ChancesOfReproduction + 1
+                if(x!=0 and i != rows-1):
+                    #checking bottom left
+                    if(ar[i+1][x-1]=="*"):
+                        ChancesOfReproduction = ChancesOfReproduction + 1
+                if(x!=cols-1 and i !=0):
+                    ##checking top right
+                    if(ar[i-1][x+1] =="*"):
+                        ChancesOfReproduction = ChancesOfReproduction + 1
+                if(x!=cols-1 and i != rows-1):
+                    #checking bottom right
+                    if(ar[i+1][x+1]=="*"):
+                        ChancesOfReproduction = ChancesOfReproduction + 1
+                if(ChancesOfReproduction == 3):
+                    NextGeneration[i][x]="*"
+                
     #fill in the blanks
     for i in range(rows):
         for x in range(cols):
@@ -150,12 +155,9 @@ def GameOfLife(ar,x):
        GameOfLife(nextGeneration,x)
     
 def main():
-    
-    ar = [['',' ',' ',' ',' ' ],
-          [' ',' ',' ',' ',' ' ],
-          [' ',' ',' ',' ',' ' ],
-          [' ',' ',' ',' ',' ' ],
-          [' ',' ',' ',' ',' ' ]]
+    rows = int(input("Enter the number of desired rows: "))
+    cols = int(input("Enter the number of desired colums: "))
+    ar=GiveBoundaries(rows,cols)
     ar= RandomlyFillArray(ar)
     print("Generation: 1")
     x = 1
