@@ -11,6 +11,7 @@
 import os
 import time
 import random
+import sys
 #makes it so array can be made from user input
 def GiveBoundaries(rows,cols):
     a = []
@@ -164,6 +165,11 @@ def main():
     display_array(ar)
     GameOfLife(ar,x)
 
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        main()
+    else:
+        main()
     
 
 
